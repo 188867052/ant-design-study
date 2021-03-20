@@ -1,80 +1,13 @@
-import { PlusOutlined } from '@ant-design/icons';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import { FooterToolbar, PageContainer } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
-import { Button, Drawer, message } from 'antd';
+import { Button, Drawer } from 'antd';
 import React, { useRef, useState } from 'react';
 import { getColumns } from "./columns";
 import CreateForm from './components/CreateForm';
+import Table from './components/ListTable';
 import UpdateForm from './components/UpdateForm';
-import { addRule, queryRule, removeRule, updateRule } from './service';
-/**
- * 添加节点
- *
- * @param fields
- */
-
-const handleAdd = async (fields) => {
-  const hide = message.loading('正在添加');
-
-  try {
-    await addRule({ ...fields });
-    hide();
-    message.success('添加成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('添加失败请重试！');
-    return false;
-  }
-};
-/**
- * 更新节点
- *
- * @param fields
- */
-
-const handleUpdate = async (fields) => {
-  const hide = message.loading('正在配置');
-
-  try {
-    await updateRule({
-      name: fields.name,
-      desc: fields.desc,
-      key: fields.key,
-    });
-    hide();
-    message.success('配置成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('配置失败请重试！');
-    return false;
-  }
-};
-/**
- * 删除节点
- *
- * @param selectedRows
- */
-
-const handleRemove = async (selectedRows) => {
-  const hide = message.loading('正在删除');
-  if (!selectedRows) return true;
-
-  try {
-    await removeRule({
-      key: selectedRows.map((row) => row.key),
-    });
-    hide();
-    message.success('删除成功，即将刷新');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('删除失败，请重试');
-    return false;
-  }
-};
+import { handleAdd, handleRemove, handleUpdate } from './function';
 
 const TableList = () => {
   const [createModalVisible, handleModalVisible] = useState(false);
@@ -85,26 +18,23 @@ const TableList = () => {
   const [selectedRowsState, setSelectedRows] = useState([]);
 
   const columns = getColumns(setRow, handleUpdateModalVisible, setStepFormValues);
+  const commonProps = {
+    columns,
+    actionRef,
+    createModalVisible,
+    handleModalVisible,
+    updateModalVisible,
+    handleUpdateModalVisible,
+    stepFormValues,
+    setStepFormValues,
+    row,
+    setRow,
+    selectedRowsState,
+    setSelectedRows
+  }
   return (
     <PageContainer>
-      <ProTable
-        headerTitle="查询表格"
-        actionRef={actionRef}
-        rowKey="key"
-        search={{
-          labelWidth: 120,
-        }}
-        toolBarRender={() => [
-          <Button type="primary" onClick={() => handleModalVisible(true)}>
-            <PlusOutlined /> 新建
-          </Button>,
-        ]}
-        request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
-        columns={columns}
-        rowSelection={{
-          onChange: (_, selectedRows) => setSelectedRows(selectedRows),
-        }}
-      />
+      <Table {...commonProps} />
       {selectedRowsState?.length > 0 && (
         <FooterToolbar
           extra={
