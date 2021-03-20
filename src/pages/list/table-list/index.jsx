@@ -1,13 +1,13 @@
-import ProDescriptions from '@ant-design/pro-descriptions';
-import { FooterToolbar, PageContainer } from '@ant-design/pro-layout';
+import { PageContainer } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
-import { Button, Drawer } from 'antd';
 import React, { useRef, useState } from 'react';
 import { getColumns } from "./columns";
 import CreateForm from './components/CreateForm';
+import DetailDrawer from './components/DetailDrawer';
+import FooterTool from './components/FooterToolbar';
 import Table from './components/ListTable';
 import UpdateForm from './components/UpdateForm';
-import { handleAdd, handleRemove, handleUpdate } from './function';
+import { handleAdd, handleUpdate } from './function';
 
 const TableList = () => {
   const [createModalVisible, handleModalVisible] = useState(false);
@@ -35,37 +35,7 @@ const TableList = () => {
   return (
     <PageContainer>
       <Table {...commonProps} />
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              已选择{' '}
-              <a
-                style={{
-                  fontWeight: 600,
-                }}
-              >
-                {selectedRowsState.length}
-              </a>{' '}
-              项&nbsp;&nbsp;
-              <span>
-                服务调用次数总计 {selectedRowsState.reduce((pre, item) => pre + item.callNo, 0)} 万
-              </span>
-            </div>
-          }
-        >
-          <Button
-            onClick={async () => {
-              await handleRemove(selectedRowsState);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
-            }}
-          >
-            批量删除
-          </Button>
-          <Button type="primary">批量审批</Button>
-        </FooterToolbar>
-      )}
+      {selectedRowsState?.length > 0 && (<FooterTool {...commonProps} />)}
       <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible}>
         <ProTable
           onSubmit={async (value) => {
@@ -106,29 +76,7 @@ const TableList = () => {
           values={stepFormValues}
         />
       ) : null}
-
-      <Drawer
-        width={600}
-        visible={!!row}
-        onClose={() => {
-          setRow(undefined);
-        }}
-        closable={false}
-      >
-        {row?.name && (
-          <ProDescriptions
-            column={2}
-            title={row?.name}
-            request={async () => ({
-              data: row || {},
-            })}
-            params={{
-              id: row?.name,
-            }}
-            columns={columns}
-          />
-        )}
-      </Drawer>
+      <DetailDrawer {...commonProps}></DetailDrawer>
     </PageContainer>
   );
 };

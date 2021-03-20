@@ -4,7 +4,7 @@ import { Button } from 'antd';
 import { queryRule } from '../service';
 
 const Table = (props) => {
-  const { columns, actionRef, handleModalVisible } = props;
+  const { columns, actionRef, handleModalVisible, setSelectedRows } = props;
   return <ProTable
     headerTitle="查询表格"
     actionRef={actionRef}
