@@ -4,6 +4,11 @@ import React from 'react';
 export const getColumns = (setRow, handleUpdateModalVisible, setStepFormValues) => {
   const columns = [
     {
+      dataIndex: 'index',
+      valueType: 'indexBorder',
+      width: 48,
+    },
+    {
       title: '规则名称',
       dataIndex: 'name',
       tip: '规则名称是唯一的 key',
@@ -23,6 +28,7 @@ export const getColumns = (setRow, handleUpdateModalVisible, setStepFormValues) 
       title: '描述',
       dataIndex: 'desc',
       valueType: 'textarea',
+      search: false,
     },
     {
       title: '服务调用次数',

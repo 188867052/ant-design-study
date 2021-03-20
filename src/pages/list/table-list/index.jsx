@@ -5,7 +5,7 @@ import { getColumns } from "./columns";
 import CreateForm from './components/CreateForm';
 import DetailDrawer from './components/DetailDrawer';
 import FooterTool from './components/FooterToolbar';
-import Table from './components/ListTable';
+import Table from './components/Table';
 import UpdateForm from './components/UpdateForm';
 import { handleAdd, handleUpdate } from './function';
 
